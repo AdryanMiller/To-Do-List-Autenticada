@@ -1,6 +1,6 @@
 import pymysql
 
-def create_user(connection, email, password_hash):
+def create_user(connection, email:str, password_hash:str):
     cursor = None
     try:
 
@@ -16,12 +16,27 @@ def create_user(connection, email, password_hash):
         if cursor:
             cursor.close()
 
-def find_user_by_email(connection, email):
+def find_user_by_email(connection, email:str):
     cursor = None
     try:
         cursor = connection.cursor()
         command_sql = "SELECT * FROM users WHERE email = %s"
         cursor.execute(command_sql,(email,))
+        results = cursor.fetchone()
+        return results
+
+    except pymysql.Error as e:
+        raise RuntimeError('Error inesperado no banco de dados') from e
+    finally:
+        if cursor:
+            cursor.close()
+
+def find_user_by_id(connection, user_id:int):
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        command_sql = "SELECT * FROM users WHERE id = %s"
+        cursor.execute(command_sql,(user_id,))
         results = cursor.fetchone()
         return results
 
@@ -44,7 +59,7 @@ def update_avatar(connection, user_id, avatar):
         if cursor:
             cursor.close()
 
-def update_password(connection, user_id, password_hash):
+def update_password(connection, user_id, password_hash:str):
     cursor = None
     try:
         cursor = connection.cursor()
