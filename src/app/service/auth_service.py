@@ -1,6 +1,6 @@
 from src.app.database.connection import connect_db
 from src.app.repository.user_repository import find_user_by_email, create_user, find_user_by_id, save_totp_secret, enable_totp
-from src.app.utils.auth_utils import is_valid_email, is_empty_string, hash_password, check_password
+from src.app.utils.auth_utils import is_valid_email, is_empty_string, hash_password, check_password, is_valid_password
 from src.app.utils.totp_utils import generate_totp_secret, generate_totp_uri, verify_totp_code
 from src.app.exceptions import BusinessError
 
@@ -9,6 +9,9 @@ def register_user(email:str,password:str):
         raise BusinessError('Email e senha são obrigatorios')
     if not is_valid_email(email):
         raise BusinessError('Email invalido')
+    erro = is_valid_password(password)
+    if erro:
+        raise BusinessError(erro)
     connection = connect_db()
     try:
         if find_user_by_email(connection, email):

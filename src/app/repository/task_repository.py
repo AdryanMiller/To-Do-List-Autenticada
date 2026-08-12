@@ -15,12 +15,12 @@ def create_task_repository(connection, user_id, title, description):
         if cursor:
             cursor.close()
 
-def get_task_repository(connection, user_id):
+def get_task_repository(connection, user_id,status_filter):
     cursor = None
     try:
         cursor = connection.cursor()
-        command_sql = "SELECT title,description,status FROM tasks WHERE user_id = %s"
-        cursor.execute(command_sql, (user_id,))
+        command_sql = "SELECT title,description,status FROM tasks WHERE user_id = %s AND (%s = 'all' OR status = %s)"
+        cursor.execute(command_sql, (user_id, status_filter, status_filter))
         result = cursor.fetchall()
         return result
     except pymysql.Error as e:
@@ -37,6 +37,19 @@ def update_task_repository(connection, title, description, task_id, user_id):
         cursor.execute(command_sql, (title, description, task_id, user_id))
         connection.commit()
 
+    except pymysql.Error as e:
+        raise RuntimeError('Error inesperado no banco de dados') from e
+    finally:
+        if cursor:
+            cursor.close()
+
+def update_status_repository(connection, task_id, user_id, status):
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        command_sql = "UPDATE tasks SET status = %s WHERE id = %s AND user_id = %s"
+        cursor.execute(command_sql, (status, task_id, user_id))
+        connection.commit()
     except pymysql.Error as e:
         raise RuntimeError('Error inesperado no banco de dados') from e
     finally:
