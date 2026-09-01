@@ -39,7 +39,7 @@ def login_user(email:str,password:str):
     finally:
         connection.close()
 
-def start_totp_setup(user_id):
+def start_totp_setup(user_id:int):
     connection = connect_db()
     try:
         user = find_user_by_id(connection, user_id)
@@ -51,7 +51,7 @@ def start_totp_setup(user_id):
     finally:
         connection.close()
 
-def confirm_totp_setup(user_id, code):
+def confirm_totp_setup(user_id:int, code):
     connection = connect_db()
     try:
         user = find_user_by_id(connection, user_id)
@@ -64,7 +64,7 @@ def confirm_totp_setup(user_id, code):
     finally:
         connection.close()
 
-def verify_totp_login(user_id, code):
+def verify_totp_login(user_id:int, code):
     connection = connect_db()
     try:
         user = find_user_by_id(connection, user_id)
@@ -75,5 +75,4 @@ def verify_totp_login(user_id, code):
             raise BusinessError('Erro: 400, Codigo invalido')
     finally:
         connection.close()
-
 

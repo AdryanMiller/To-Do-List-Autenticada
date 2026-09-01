@@ -55,4 +55,3 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('auth_bp.login'))
 
-

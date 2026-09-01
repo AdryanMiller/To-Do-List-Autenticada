@@ -98,4 +98,3 @@ def enable_totp(connection, user_id):
         if cursor:
             cursor.close()
 
-
